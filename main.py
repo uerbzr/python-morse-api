@@ -1,9 +1,8 @@
 from typing import Union
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 
 app = FastAPI()
-
 
 morse = {
          'A':". -",
@@ -33,18 +32,34 @@ morse = {
          'Y':"- . - -",
          'Z':"- - . ."
 }
+
 @app.get("/")
-def read_root():
+async def read_root():
     return {"Hello": "World"}
 
-@app.get("/morse/{key}")
-def read_morse_key(key: str):
+@app.get("/morse/encode/{sentence}")
+async def read_item(sentence: str, q: Union[str, None] = None):
+    return {"encoded_message": await encode_string(sentence), "q": q}
+
+@app.get("/morse/decipher/{key}")
+async def read_morse_key(key: str):
     return morse[key]
 @app.get("/morse")
-def read_morse():
+async def read_morse():
     return morse
 
 
 @app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
+async def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
+
+async def encode_string(message:str):
+        result = ""
+        for c in message.upper():
+            if(c==" "):
+                result = result + "       "
+            else:                
+                result = result + "   " + morse[c]
+                                  
+        return result
+          
