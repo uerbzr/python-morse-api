@@ -37,6 +37,9 @@ morse = {
 def read_root():
     return {"Hello": "World"}
 
+@app.get("/morse/{key}")
+def read_morse_key(key: str):
+    return morse[key]
 @app.get("/morse")
 def read_morse():
     return morse
